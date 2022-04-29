@@ -11,16 +11,7 @@ export interface ROnboardingWrapperOptions {
 }
 
 export const defaultROnboardingWrapperOptions: ROnboardingWrapperOptions = {
-  popper: {
-    modifiers: [
-      {
-        name: "offset",
-        options: {
-          offset: [0, 10],
-        },
-      }
-    ]
-  } as ROnboardingWrapperOptions["popper"],
+  popper: {},
   disableOverlay: false,
   scrollToStep: {
     enabled: true,
