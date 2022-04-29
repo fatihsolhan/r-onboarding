@@ -1,0 +1,74 @@
+{
+  "name": "r-onboarding",
+  "version": "1.0.0",
+  "description": "r-onboarding is a super-slim, fully-typed onboarding component for React",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fatihsolhan/r-onboarding.git"
+  },
+  "author": "Fatih Solhan",
+  "license": "MIT",
+  "private": false,
+  "keywords": [
+    "onboarding",
+    "react-onboarding",
+    "tour",
+    "react-tour",
+    "react-introduction",
+    "react-intro",
+    "react",
+    "nextjs-onboarding",
+    "nextjs-tour",
+    "nextjs-intro",
+    "nextjs-react-intro",
+    "nextjs-react-tour"
+  ],
+  "files": [
+    "dist",
+    "src/types/*"
+  ],
+  "types": "./src/types/index.d.ts",
+  "main": "./dist/r-onboarding.umd.js",
+  "module": "./dist/r-onboarding.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/r-onboarding.es.js",
+      "require": "./dist/r-onboarding.umd.js"
+    },
+    "./dist/style.css": "./dist/style.css"
+  },
+  "scripts": {
+    "build": "tsc && vite build",
+    "docs:dev": "cd docs && npm run dev",
+    "docs:generate": "cd docs && npm run generate",
+    "demo:dev": "cd demo && npm run dev",
+    "demo:build": "cd demo && npm run build"
+  },
+  "dependencies": {
+    "@popperjs/core": "^2.11.5"
+  },
+  "devDependencies": {
+    "@types/lodash.merge": "^4.6.6",
+    "@types/node": "^17.0.23",
+    "@types/react": "^17.0.33",
+    "@types/react-dom": "^17.0.10",
+    "@vitejs/plugin-react": "^1.0.7",
+    "autoprefixer": "^10.4.4",
+    "lodash.merge": "^4.6.2",
+    "postcss": "^8.4.12",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "sass": "^1.50.0",
+    "tailwindcss": "^3.0.23",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.0"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/fatihsolhan/r-onboarding/issues"
+  },
+  "homepage": "https://github.com/fatihsolhan/r-onboarding#readme"
+}

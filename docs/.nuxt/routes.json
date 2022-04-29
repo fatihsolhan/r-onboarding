@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/social-image-preview",
+    "name": "social-image-preview___en",
+    "component": "/Users/fatihsolhan/Desktop/projects/r-onboarding/docs/node_modules/docus/dist/social-image/runtime/pages/social-image-preview.vue",
+    "_name": "_74a93dee"
+  },
+  {
+    "path": "/*",
+    "name": "all___en",
+    "component": "/Users/fatihsolhan/Desktop/projects/r-onboarding/docs/node_modules/docus/dist/app/pages/_.vue",
+    "_name": "_a2173f70"
+  }
+]
