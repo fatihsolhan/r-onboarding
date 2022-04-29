@@ -1,7 +1,7 @@
 import { ROnboardingWrapper, useROnboarding } from 'r-onboarding';
+import 'r-onboarding/dist/style.css';
 import { StepEntity } from 'r-onboarding/src/types/StepEntity';
 import { useEffect, useRef, useState } from 'react';
-import '../../dist/style.css';
 import Button from "./components/Button";
 import Cats from './components/Cats';
 import Header from "./components/Header";
