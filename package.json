@@ -43,7 +43,7 @@
     "docs:generate": "cd docs && npm run generate",
     "demo:dev": "cd demo && npm run dev",
     "demo:build": "cd demo && npm run build",
-    "semantic-release": "semantic-release",
+    "semantic-release": "semantic-release --branches main",
     "commit": "git-cz"
   },
   "dependencies": {
