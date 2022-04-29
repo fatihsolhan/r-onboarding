@@ -1,16 +1,23 @@
+import { ROnboardingWrapper, useROnboarding } from 'r-onboarding';
+import { StepEntity } from 'r-onboarding/src/types/StepEntity';
 import { useEffect, useRef, useState } from 'react';
-import { ROnboardingWrapper, useROnboarding } from '../../dist/r-onboarding.es.js';
 import '../../dist/style.css';
 import Button from "./components/Button";
 import Cats from './components/Cats';
 import Header from "./components/Header";
+interface Cat {
+  origin: string;
+  name: string;
+  length: string;
+  image_link: string;
+}
 function App() {
   const wrapperRef = useRef(null)
   const { start, goToStep, finish } = useROnboarding(wrapperRef)
   const [showCats, setShowCats] = useState(false)
-  const [cats, setCats] = useState([])
+  const [cats, setCats] = useState<Cat[]>([])
   const fetchCats = async () => {
-    const result = await fetch("https://api.api-ninjas.com/v1/cats?min_life_expectancy=1&offset=4&page=1", {
+    const result = await fetch("https://api.api-ninjas.com/v1/cats?min_life_expectancy=1", {
       headers: {
         "X-API-KEY": "LUtgGg3Y+UnesrnU3v+daQ==o1VRpX0ymNwBCtnq",
       }
@@ -20,7 +27,7 @@ function App() {
   useEffect(() => {
     fetchCats()
   }, [])
-  const [steps, setSteps] = useState([])
+  const [steps, setSteps] = useState<StepEntity[]>([])
   useEffect(() => {
     const s = cats.map((cat, index) => {
       return {
@@ -65,7 +72,9 @@ function App() {
   return (
     <div>
     <div className="min-h-screen pb-32">
-      <ROnboardingWrapper ref={wrapperRef} steps={steps} />
+      {
+        // @ts-expect-error
+        <ROnboardingWrapper ref={wrapperRef} steps={steps} />}
       <Header />
       <div className="max-w-3xl mx-auto px-4">
         <div className="w-auto px-4 pt-16 pb-8 mx-auto sm:pt-24 lg:px-8">

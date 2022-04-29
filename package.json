@@ -4,7 +4,7 @@
   "description": "r-onboarding is a super-slim, fully-typed onboarding component for React",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fatihsolhan/r-onboarding.git"
+    "url": "git+https://github.com/fatihsolhan/r-onboarding.git"
   },
   "author": "Fatih Solhan",
   "license": "MIT",
@@ -70,5 +70,8 @@
   "bugs": {
     "url": "https://github.com/fatihsolhan/r-onboarding/issues"
   },
-  "homepage": "https://github.com/fatihsolhan/r-onboarding#readme"
+  "homepage": "https://github.com/fatihsolhan/r-onboarding#readme",
+  "directories": {
+    "doc": "docs"
+  }
 }
