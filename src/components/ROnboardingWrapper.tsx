@@ -45,21 +45,23 @@ const ROnboardingWrapper = forwardRef(({ steps, options, children }: { steps: St
     setMergedOptions(merge({}, defaultROnboardingWrapperOptions, options))
   }, [])
   if (isFinished) return null;
-  return <ROnboardingContext.Provider value={{
-    options: mergedOptions,
-    step: activeStep,
-    nextStep: toNextStep,
-    previousStep: toPreviousStep,
-    exit: finish,
-    isFirstStep,
-    isLastStep,
-    index
-  }}>
-    {
-      children
-        ? <Fragment key={index}>{children({ step: activeStep, next: toNextStep, previous: toPreviousStep, exit: finish, isFirst: isFirstStep, isLast: isLastStep, index })}</Fragment>
-        : <ROnboardingStep key={index} />
-    }
-  </ROnboardingContext.Provider>
+  return <div data-r-onboarding-wrapper>
+    <ROnboardingContext.Provider value={{
+      options: mergedOptions,
+      step: activeStep,
+      nextStep: toNextStep,
+      previousStep: toPreviousStep,
+      exit: finish,
+      isFirstStep,
+      isLastStep,
+      index
+    }}>
+      {
+        children
+          ? <Fragment key={index}>{children({ step: activeStep, next: toNextStep, previous: toPreviousStep, exit: finish, isFirst: isFirstStep, isLast: isLastStep, index })}</Fragment>
+          : <ROnboardingStep key={index} />
+      }
+    </ROnboardingContext.Provider>
+  </div>
 })
 export default ROnboardingWrapper

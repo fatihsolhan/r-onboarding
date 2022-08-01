@@ -104,6 +104,7 @@ export default function ({ children }: { children?: JSX.Element }) {
               </div>
             </div>
             : null}
+          <div data-popper-arrow />
         </div>
       </div>
     </div>
