@@ -44,8 +44,11 @@ export default function ({ children }: { children?: JSX.Element }) {
     if (mergedOptions?.scrollToStep?.enabled) {
       element.scrollIntoView(mergedOptions?.scrollToStep?.options)
     }
-    if (!mergedOptions?.disableOverlay) {
-      updatePath(element);
+    if (mergedOptions?.overlay?.enabled) {
+      updatePath(element, {
+        padding: mergedOptions?.overlay?.padding,
+        borderRadius: mergedOptions?.overlay?.borderRadius,
+      });
     }
     setTargetElementClassName(element);
   };
