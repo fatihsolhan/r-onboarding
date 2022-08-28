@@ -23,6 +23,11 @@ export interface ROnboardingWrapperOptions {
   scrollToStep?: {
     enabled?: boolean
     options?: ScrollIntoViewOptions
+  },
+  labels?: {
+    previousButton?: string
+    nextButton?: string
+    finishButton?: string
   }
 }
 
@@ -40,6 +45,11 @@ export const defaultROnboardingWrapperOptions: ROnboardingWrapperOptions = {
       block: 'center',
       inline: 'center'
     }
+  },
+  labels: {
+    previousButton: 'Previous',
+    nextButton: 'Next',
+    finishButton: 'Finish'
   }
 }
 

@@ -2,6 +2,7 @@ import { ROnboardingContext } from "@/contexts";
 import useGetElement from "@/hooks/useGetElement";
 import useSetClassName from "@/hooks/useSetClassName";
 import useSvgOverlay from "@/hooks/useSvgOverlay";
+import { defaultROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
 import { createPopper } from "@popperjs/core";
 import merge from "lodash.merge";
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -12,6 +13,11 @@ export default function ({ children }: { children?: JSX.Element }) {
   const context = useContext(ROnboardingContext)
   const stepElement = useRef(null)
   const { setTargetElementClassName, unsetTargetElementClassName } = useSetClassName()
+  const [buttonLabels, setButtonLabels] = useState({
+    previous: defaultROnboardingWrapperOptions.labels?.previousButton,
+    next: defaultROnboardingWrapperOptions.labels?.nextButton,
+    finish: defaultROnboardingWrapperOptions.labels?.finishButton,
+  })
   useEffect(() => {
     beforeStepStart()
     return () => {
@@ -40,6 +46,11 @@ export default function ({ children }: { children?: JSX.Element }) {
     const element = useGetElement(context.step?.attachTo?.element);
     if (!element || !stepElement.current) return
     const mergedOptions = merge({}, context.options, context.step?.options)
+    setButtonLabels({
+      previous: mergedOptions?.labels?.previousButton,
+      next: mergedOptions?.labels?.nextButton,
+      finish: mergedOptions?.labels?.finishButton,
+    })
     createPopper(element, stepElement.current!, mergedOptions.popper);
     if (mergedOptions?.scrollToStep?.enabled) {
       element.scrollIntoView(mergedOptions?.scrollToStep?.options)
@@ -97,13 +108,13 @@ export default function ({ children }: { children?: JSX.Element }) {
                     type="button"
                     onClick={onPrevious}
                     className="r-onboarding-btn-secondary"
-                  >Previous</button>
+                  >{ buttonLabels.previous }</button>
                 }
                 <button
                   onClick={onNext}
                   type="button"
                   className="r-onboarding-btn-primary"
-                >{context.isLastStep ? 'Finish' : 'Next'}</button>
+                >{context.isLastStep ? buttonLabels.finish : buttonLabels.next}</button>
               </div>
             </div>
             : null}
