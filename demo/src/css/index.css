@@ -3,12 +3,125 @@
 @tailwind utilities;
 
 body {
-  background: linear-gradient(180deg,transparent 0,#111 300px),fixed 0 0 /20px 20px radial-gradient(#313131 1px,transparent 0),fixed 10px 10px /20px 20px radial-gradient(#313131 1px,transparent 0);
-  background-color: #111111;
+  background-color: #0a0a0a;
 }
-.title {
-  text-shadow: 0 2px 5px #000
+
+/* Theme styles for onboarding steps */
+.step-theme-default {
+  --r-onboarding-step-arrow-background: #ffffff;
 }
-header {
-  box-shadow: inset 0 -1px 0 hsl(0deg 0% 100% / 10%);
+
+.step-theme-accent {
+  --r-onboarding-step-arrow-background: #4f46e5;
+}
+
+.step-theme-accent .r-onboarding-item {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+}
+
+.step-theme-accent .r-onboarding-item__header-title,
+.step-theme-accent .r-onboarding-item__description {
+  color: white;
+}
+
+.step-theme-accent .r-onboarding-btn-primary {
+  background: white;
+  color: #4f46e5;
+}
+
+.step-theme-accent .r-onboarding-btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.step-theme-warm {
+  --r-onboarding-step-arrow-background: #f59e0b;
+}
+
+.step-theme-warm .r-onboarding-item {
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+  color: white;
+}
+
+.step-theme-warm .r-onboarding-item__header-title,
+.step-theme-warm .r-onboarding-item__description {
+  color: white;
+}
+
+.step-theme-warm .r-onboarding-btn-primary {
+  background: white;
+  color: #f59e0b;
+}
+
+.step-theme-warm .r-onboarding-btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.step-theme-cool {
+  --r-onboarding-step-arrow-background: #06b6d4;
+}
+
+.step-theme-cool .r-onboarding-item {
+  background: linear-gradient(135deg, #06b6d4, #3b82f6);
+  color: white;
+}
+
+.step-theme-cool .r-onboarding-item__header-title,
+.step-theme-cool .r-onboarding-item__description {
+  color: white;
+}
+
+.step-theme-cool .r-onboarding-btn-primary {
+  background: white;
+  color: #06b6d4;
+}
+
+.step-theme-cool .r-onboarding-btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.step-theme-purple {
+  --r-onboarding-step-arrow-background: #8b5cf6;
+}
+
+.step-theme-purple .r-onboarding-item {
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: white;
+}
+
+.step-theme-purple .r-onboarding-item__header-title,
+.step-theme-purple .r-onboarding-item__description {
+  color: white;
+}
+
+.step-theme-purple .r-onboarding-btn-primary {
+  background: white;
+  color: #8b5cf6;
+}
+
+.step-theme-purple .r-onboarding-btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Close button styling for themed steps */
+.step-theme-accent .r-onboarding-item__header-close,
+.step-theme-warm .r-onboarding-item__header-close,
+.step-theme-cool .r-onboarding-item__header-close,
+.step-theme-purple .r-onboarding-item__header-close {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.step-theme-accent .r-onboarding-item__header-close:hover,
+.step-theme-warm .r-onboarding-item__header-close:hover,
+.step-theme-cool .r-onboarding-item__header-close:hover,
+.step-theme-purple .r-onboarding-item__header-close:hover {
+  color: white;
 }
