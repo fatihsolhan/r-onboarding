@@ -2,7 +2,7 @@ import { ROnboardingContext } from "@/contexts";
 import useGetElement from "@/hooks/useGetElement";
 import useSetClassName from "@/hooks/useSetClassName";
 import useSvgOverlay from "@/hooks/useSvgOverlay";
-import { defaultROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
+import { defaultROnboardingWrapperOptions, HookOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
 import { createPopper } from "@popperjs/core";
 import merge from "lodash.merge";
 import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -18,71 +18,154 @@ export default function ({ children }: { children?: JSX.Element }) {
     next: defaultROnboardingWrapperOptions.labels?.nextButton,
     finish: defaultROnboardingWrapperOptions.labels?.finishButton,
   })
+  const [mergedOptions, setMergedOptions] = useState<ROnboardingWrapperOptions>({})
+  const previousBodyPointerEvents = useRef<string>('')
+
   useEffect(() => {
     beforeStepStart()
     return () => {
-      beforeStepEnd()
+      beforeStepEnd(context.direction)
+      restoreBodyPointerEvents()
     }
   }, [])
+
   useLayoutEffect(() => {
     if (!show) return
     attachElement()
   }, [show])
+
   const onNext = () => {
-    beforeStepEnd();
+    beforeStepEnd('forward');
     context.nextStep()
   }
+
   const onPrevious = () => {
-    beforeStepEnd();
+    beforeStepEnd('backward');
     context.previousStep()
   }
+
+  const onExit = () => {
+    beforeStepEnd(context.direction);
+    context.exit()
+  }
+
+  const getHookOptions = (direction: 'forward' | 'backward' = context.direction): HookOptions => ({
+    index: context.index,
+    step: context.step!,
+    direction,
+  })
+
   const beforeStepStart = async () => {
-    await context.step?.on?.beforeStep?.();
+    if (context.step?.on?.beforeStep) {
+      await context.step.on.beforeStep(getHookOptions());
+    }
     const element = useGetElement(context.step?.attachTo?.element);
     if (!element || !stepElement.current) return
     setShow(true)
   }
+
   const attachElement = () => {
     const element = useGetElement(context.step?.attachTo?.element);
     if (!element || !stepElement.current) return
-    const mergedOptions = merge({}, context.options, context.step?.options)
+    const options = merge({}, context.options, context.step?.options)
+    setMergedOptions(options)
     setButtonLabels({
-      previous: mergedOptions?.labels?.previousButton,
-      next: mergedOptions?.labels?.nextButton,
-      finish: mergedOptions?.labels?.finishButton,
+      previous: options?.labels?.previousButton,
+      next: options?.labels?.nextButton,
+      finish: options?.labels?.finishButton,
     })
-    createPopper(element, stepElement.current!, mergedOptions.popper);
-    if (mergedOptions?.scrollToStep?.enabled) {
-      element.scrollIntoView(mergedOptions?.scrollToStep?.options)
+    createPopper(element, stepElement.current!, options.popper);
+    if (options?.scrollToStep?.enabled) {
+      element.scrollIntoView(options?.scrollToStep?.options)
     }
-    if (mergedOptions?.overlay?.enabled) {
+    if (options?.overlay?.enabled) {
       updatePath(element, {
-        padding: mergedOptions?.overlay?.padding,
-        borderRadius: mergedOptions?.overlay?.borderRadius,
+        padding: options?.overlay?.padding,
+        borderRadius: options?.overlay?.borderRadius,
       });
     }
     setTargetElementClassName(element);
+
+    // Handle disableInteraction
+    if (options?.disableInteraction) {
+      previousBodyPointerEvents.current = document.body.style.pointerEvents
+      document.body.style.pointerEvents = 'none'
+    }
   };
 
-  const beforeStepEnd = () => {
-    context.step?.on?.afterStep?.();
-    unsetTargetElementClassName(useGetElement(context?.step?.attachTo.element), context?.step?.attachTo.classList)
+  const restoreBodyPointerEvents = () => {
+    if (document.body.style.pointerEvents === 'none') {
+      document.body.style.pointerEvents = previousBodyPointerEvents.current || ''
+    }
   }
+
+  const beforeStepEnd = (direction: 'forward' | 'backward' = context.direction) => {
+    if (context.step?.on?.afterStep) {
+      context.step.on.afterStep(getHookOptions(direction));
+    }
+    unsetTargetElementClassName(useGetElement(context?.step?.attachTo.element), context?.step?.attachTo.classList)
+    restoreBodyPointerEvents()
+  }
+
+  const shouldShowPreviousButton = () => {
+    if (context.isFirstStep) return false
+    if (mergedOptions?.hideButtons?.previous) return false
+    return true
+  }
+
+  const shouldShowNextButton = () => {
+    if (context.isLastStep) return true // Always show finish button
+    if (mergedOptions?.hideButtons?.next) return false
+    return true
+  }
+
+  const renderTitle = () => {
+    if (!context?.step?.content?.title) return null
+    if (context.step.content.html) {
+      return (
+        <span
+          className="r-onboarding-item__header-title"
+          dangerouslySetInnerHTML={{ __html: context.step.content.title }}
+        />
+      )
+    }
+    return (
+      <span className="r-onboarding-item__header-title">
+        {context.step.content.title}
+      </span>
+    )
+  }
+
+  const renderDescription = () => {
+    if (!context?.step?.content?.description) return null
+    if (context.step.content.html) {
+      return (
+        <p
+          className="r-onboarding-item__description"
+          dangerouslySetInnerHTML={{ __html: context.step.content.description }}
+        />
+      )
+    }
+    return (
+      <p className="r-onboarding-item__description">
+        {context.step.content.description}
+      </p>
+    )
+  }
+
   return (
     <div className={show ? '' : 'hidden'}>
       <svg style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, opacity: '0.5', zIndex: 'var(--r-onboarding-overlay-z, 10)', pointerEvents: 'none' }}>
         <path d={path} />
       </svg>
-      <div style={{ position: 'relative', zIndex: 'var(--r-onboarding-step-z, 20)' }}>
+      <div style={{ position: 'relative', zIndex: 'var(--r-onboarding-step-z, 20)', pointerEvents: 'auto' }}>
         <div ref={stepElement}>
           {context.step ?
             children ||
             <div className="r-onboarding-item">
               <div className="r-onboarding-item__header">
-                {context?.step?.content?.title && <span
-                  className="r-onboarding-item__header-title"
-                >{context.step.content.title}</span>}
-                <button onClick={() => context.exit()} className="r-onboarding-item__header-close">
+                {renderTitle()}
+                <button onClick={onExit} className="r-onboarding-item__header-close">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4"
@@ -99,22 +182,22 @@ export default function ({ children }: { children?: JSX.Element }) {
                   </svg>
                 </button>
               </div>
-              {context?.step?.content?.description && <p
-                className="r-onboarding-item__description"
-              >{context.step.content.description}</p>}
+              {renderDescription()}
               <div className="r-onboarding-item__actions">
-                {!context.isFirstStep &&
+                {shouldShowPreviousButton() &&
                   <button
                     type="button"
                     onClick={onPrevious}
                     className="r-onboarding-btn-secondary"
-                  >{ buttonLabels.previous }</button>
+                  >{buttonLabels.previous}</button>
                 }
-                <button
-                  onClick={onNext}
-                  type="button"
-                  className="r-onboarding-btn-primary"
-                >{context.isLastStep ? buttonLabels.finish : buttonLabels.next}</button>
+                {shouldShowNextButton() &&
+                  <button
+                    onClick={onNext}
+                    type="button"
+                    className="r-onboarding-btn-primary"
+                  >{context.isLastStep ? buttonLabels.finish : buttonLabels.next}</button>
+                }
               </div>
             </div>
             : null}

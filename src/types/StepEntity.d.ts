@@ -1,4 +1,4 @@
-import { ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
+import { HookOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
 
 export type AttachableElement = string | (() => Element | null)
 
@@ -6,10 +6,11 @@ export interface StepEntity {
   content?: {
     title: string;
     description?: string;
+    html?: boolean;
   }
   on?: {
-    beforeStep?: () => void | Promise<void>
-    afterStep?: () => void
+    beforeStep?: (options?: HookOptions) => void | Promise<void>
+    afterStep?: (options?: HookOptions) => void
   },
   attachTo: {
     element: AttachableElement,
