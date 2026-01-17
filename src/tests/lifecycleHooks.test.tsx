@@ -45,7 +45,8 @@ describe('Enhanced lifecycle hooks with direction parameter', () => {
       expect(beforeStepCallback).toHaveBeenCalledWith(
         expect.objectContaining({
           index: 0,
-          direction: 'forward',
+          direction: 1, // Direction.FORWARD
+          isForward: true,
         })
       );
     });
@@ -63,7 +64,8 @@ describe('Enhanced lifecycle hooks with direction parameter', () => {
       expect(beforeStepCallback).toHaveBeenCalledWith(
         expect.objectContaining({
           index: 1,
-          direction: 'forward',
+          direction: 1, // Direction.FORWARD
+          isForward: true,
         })
       );
     });
@@ -123,7 +125,8 @@ describe('Enhanced lifecycle hooks with direction parameter', () => {
       expect(beforeStepCallback).toHaveBeenCalledWith(
         expect.objectContaining({
           index: 0,
-          direction: 'backward',
+          direction: -1, // Direction.BACKWARD
+          isBackward: true,
         })
       );
     });
@@ -175,7 +178,8 @@ describe('Enhanced lifecycle hooks with direction parameter', () => {
       expect(afterStepCallback).toHaveBeenCalledWith(
         expect.objectContaining({
           index: 0,
-          direction: 'forward',
+          direction: 1, // Direction.FORWARD
+          isForward: true,
         })
       );
     });
@@ -235,7 +239,8 @@ describe('Enhanced lifecycle hooks with direction parameter', () => {
       expect(afterStepCallback).toHaveBeenCalledWith(
         expect.objectContaining({
           index: 1,
-          direction: 'backward',
+          direction: -1, // Direction.BACKWARD
+          isBackward: true,
         })
       );
     });

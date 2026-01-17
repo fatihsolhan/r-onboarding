@@ -1,148 +1,153 @@
 # Customization
 
-r-onboarding provides extensive customization options through global options, per-step overrides, and CSS variables.
+r-onboarding is fully customizable through CSS variables and step options.
 
-## Global Options
+## CSS Variables
 
-Set default options for all steps via the `options` prop:
+Override these variables to customize the appearance:
 
-```tsx
-<ROnboardingWrapper
-  ref={wrapperRef}
-  steps={steps}
-  options={{
-    popper: {
-      placement: 'bottom',
-      modifiers: [{ name: 'offset', options: { offset: [0, 10] } }]
-    },
-    overlay: {
-      enabled: true,
-      padding: 8,
-      borderRadius: 4
-    },
-    scrollToStep: {
-      enabled: true,
-      options: { behavior: 'smooth', block: 'center' }
-    },
-    labels: {
-      previousButton: 'Back',
-      nextButton: 'Continue',
-      finishButton: 'Got it!'
-    }
-  }}
-/>
+```css
+:root {
+  /* Overlay */
+  --r-onboarding-overlay-fill: black;
+  --r-onboarding-overlay-opacity: 0.5;
+
+  /* Step tooltip */
+  --r-onboarding-step-arrow-background: white;
+  --r-onboarding-step-arrow-size: 10px;
+  --r-onboarding-step-z: 20;
+}
 ```
 
-## Per-Step Overrides
+### Overlay Theming
 
-Override global options for specific steps:
+Create different overlay themes:
+
+```css
+/* Light overlay for dark backgrounds */
+.light-overlay {
+  --r-onboarding-overlay-fill: white;
+  --r-onboarding-overlay-opacity: 0.1;
+}
+
+/* Colored overlay */
+.accent-overlay {
+  --r-onboarding-overlay-fill: #d4ff00;
+  --r-onboarding-overlay-opacity: 0.08;
+}
+```
+
+Apply themes dynamically using lifecycle hooks:
 
 ```tsx
 const steps = [
   {
-    attachTo: { element: '#sidebar' },
-    content: { title: 'Sidebar' },
-    options: {
-      popper: { placement: 'right' },
-      overlay: { padding: 16 }
+    attachTo: { element: '#dark-section' },
+    content: { title: 'Dark Section' },
+    on: {
+      beforeStep: () => {
+        document.body.classList.add('light-overlay')
+      },
+      afterStep: () => {
+        document.body.classList.remove('light-overlay')
+      }
     }
   }
 ]
 ```
 
-## Overlay Customization
+## Arrow Styling
 
-### Padding
-
-Add space around the highlighted element:
-
-```tsx
-// Uniform padding
-overlay: { padding: 10 }
-
-// Different padding per side
-overlay: {
-  padding: { top: 10, right: 20, bottom: 10, left: 20 }
-}
-```
-
-### Border Radius
-
-Round the corners of the highlight:
-
-```tsx
-// Uniform radius
-overlay: { borderRadius: 8 }
-
-// Different radius per corner
-overlay: {
-  borderRadius: {
-    leftTop: 8,
-    rightTop: 8,
-    rightBottom: 8,
-    leftBottom: 8
-  }
-}
-```
-
-## Button Customization
-
-### Custom Labels
-
-```tsx
-options={{
-  labels: {
-    previousButton: 'Back',
-    nextButton: 'Continue',
-    finishButton: 'Done!'
-  }
-}}
-```
-
-### Hiding Buttons
-
-Hide navigation buttons globally or per step:
-
-```tsx
-// Hide previous button globally
-options={{ hideButtons: { previous: true } }}
-
-// Hide buttons for specific step
-{
-  attachTo: { element: '#intro' },
-  content: { title: 'Welcome' },
-  options: { hideButtons: { previous: true, next: false } }
-}
-```
-
-## Disable Interaction
-
-Prevent users from interacting with elements outside the tour:
-
-```tsx
-<ROnboardingWrapper
-  ref={wrapperRef}
-  steps={steps}
-  options={{ disableInteraction: true }}
-/>
-```
-
-When enabled, `pointer-events: none` is applied to the document body, while the step tooltip remains interactive.
-
-## CSS Variables
-
-Customize the appearance using CSS variables:
+Customize the tooltip arrow:
 
 ```css
+/* Arrow background */
 :root {
-  /* Overlay */
-  --r-onboarding-overlay-z: 10;
+  --r-onboarding-step-arrow-background: #111111;
+}
 
-  /* Step tooltip */
-  --r-onboarding-step-z: 20;
-  --r-onboarding-step-arrow-size: 10px;
-  --r-onboarding-step-arrow-background: white;
+/* Arrow border */
+[data-r-onboarding-wrapper] [data-popper-arrow]::before {
+  border-color: #333333 !important;
 }
 ```
 
-See [CSS Variables](/api/css-variables) for the complete list.
+## Overlay Padding
+
+Control the space around highlighted elements:
+
+```tsx
+const steps = [
+  {
+    attachTo: { element: '#element' },
+    options: {
+      overlay: {
+        padding: 16,        // Padding around element
+        borderRadius: 8     // Rounded highlight
+      }
+    }
+  }
+]
+```
+
+## Popper Placement
+
+Control tooltip position:
+
+```tsx
+const steps = [
+  {
+    attachTo: { element: '#element' },
+    options: {
+      popper: {
+        placement: 'right',  // 'top' | 'bottom' | 'left' | 'right'
+        modifiers: [
+          {
+            name: 'offset',
+            options: { offset: [0, 12] }  // [skid, distance]
+          }
+        ]
+      }
+    }
+  }
+]
+```
+
+## Scroll Behavior
+
+Configure auto-scrolling:
+
+```tsx
+const steps = [
+  {
+    attachTo: { element: '#element' },
+    options: {
+      scrollToStep: {
+        enabled: true,
+        options: {
+          behavior: 'smooth',   // 'smooth' | 'instant' | 'auto'
+          block: 'center',      // 'start' | 'center' | 'end' | 'nearest'
+          inline: 'nearest'
+        }
+      }
+    }
+  }
+]
+```
+
+## Disabling Overlay
+
+Hide the overlay for specific steps:
+
+```tsx
+const steps = [
+  {
+    attachTo: { element: '#element' },
+    options: {
+      overlay: {
+        enabled: false
+      }
+    }
+  }
+]
+```

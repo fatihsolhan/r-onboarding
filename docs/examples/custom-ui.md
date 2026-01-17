@@ -1,118 +1,224 @@
 # Custom UI Example
 
-This example shows how to fully customize the `r-onboarding` component with your own UI.
+Build a completely custom step interface using render props.
+
+## Code
 
 ```tsx
-import { ROnboardingStep, ROnboardingWrapper, useROnboarding } from 'r-onboarding'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
+import { ROnboardingWrapper, ROnboardingStep, useROnboarding } from 'r-onboarding'
+import './custom-tour.css'
 
-export default function App() {
-  const steps = [
-    {
-      attachTo: { element: '#foo' },
-      content: { title: 'Welcome!' }
-    },
-    {
-      attachTo: { element: '#bar' },
-      content: {
-        title: 'Testing r-onboarding..',
-        description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-      }
+const steps = [
+  {
+    attachTo: { element: '#feature-1' },
+    content: {
+      title: 'Powerful Analytics',
+      description: 'Track your metrics in real-time with our advanced analytics dashboard.'
     }
-  ]
+  },
+  {
+    attachTo: { element: '#feature-2' },
+    content: {
+      title: 'Team Collaboration',
+      description: 'Work together seamlessly with built-in collaboration tools.'
+    }
+  },
+  {
+    attachTo: { element: '#feature-3' },
+    content: {
+      title: 'Smart Automation',
+      description: 'Automate repetitive tasks and focus on what matters.'
+    }
+  }
+]
 
+function App() {
   const wrapperRef = useRef(null)
-  const { start, goToStep, finish } = useROnboarding(wrapperRef)
+  const { start } = useROnboarding(wrapperRef)
+
+  useEffect(() => start(), [])
 
   return (
     <div>
       <ROnboardingWrapper ref={wrapperRef} steps={steps}>
-        {({ step, next, previous, exit, isFirst, isLast, index }) => {
-          if (!step) return null
-
-          return (
-            <ROnboardingStep>
-              <div className="bg-white shadow sm:rounded-lg">
-                <div className="px-4 py-5 sm:p-6">
-                  <div className="sm:flex sm:items-center sm:justify-between">
-                    <div>
-                      {step.content?.title && (
-                        <h3 className="text-lg font-medium leading-6 text-gray-900">
-                          {step.content.title}
-                        </h3>
-                      )}
-                      {step.content?.description && (
-                        <div className="mt-2 max-w-xl text-sm text-gray-500">
-                          <p>{step.content.description}</p>
-                        </div>
-                      )}
-                    </div>
-                    <div className="mt-5 space-x-4 sm:mt-0 sm:ml-6 sm:flex sm:flex-shrink-0 sm:items-center relative">
-                      <span className="absolute right-0 bottom-full mb-2 mr-2 text-gray-600 font-medium text-xs">
-                        {`${index + 1}/${steps.length}`}
-                      </span>
-                      {!isFirst && (
-                        <button
-                          onClick={previous}
-                          type="button"
-                          className="inline-flex items-center justify-center rounded-md border border-transparent bg-yellow-100 px-4 py-2 font-medium text-yellow-700 hover:bg-yellow-200 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 sm:text-sm"
-                        >
-                          Previous
-                        </button>
-                      )}
-                      <button
-                        onClick={next}
-                        type="button"
-                        className="inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:text-sm"
-                      >
-                        {isLast ? 'Finish' : 'Next'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
+        {({ step, next, previous, exit, isFirst, isLast, index }) => (
+          <ROnboardingStep>
+            <div className="custom-card">
+              {/* Progress indicator */}
+              <div className="progress">
+                <div
+                  className="progress-bar"
+                  style={{ width: `${((index + 1) / steps.length) * 100}%` }}
+                />
               </div>
-            </ROnboardingStep>
-          )
-        }}
+
+              {/* Header */}
+              <div className="card-header">
+                <span className="step-count">{index + 1} / {steps.length}</span>
+                <button onClick={exit} className="close-btn">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="card-body">
+                <h3>{step.content?.title}</h3>
+                <p>{step.content?.description}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="card-footer">
+                {!isFirst && (
+                  <button onClick={previous} className="btn btn-secondary">
+                    ← Back
+                  </button>
+                )}
+                <button onClick={next} className="btn btn-primary">
+                  {isLast ? 'Get Started' : 'Continue →'}
+                </button>
+              </div>
+            </div>
+          </ROnboardingStep>
+        )}
       </ROnboardingWrapper>
 
-      <span id="foo">Howdy, My Friend!</span>
-      <button id="bar">this is nothing but another button</button>
-
-      <button onClick={() => goToStep(1)}>Click to go second step</button>
-
-      <div>
-        <button onClick={start}>Start Onboarding</button>
-        <button onClick={finish}>Finish Onboarding</button>
-      </div>
+      {/* Demo content */}
+      <div id="feature-1" className="feature">Feature 1</div>
+      <div id="feature-2" className="feature">Feature 2</div>
+      <div id="feature-3" className="feature">Feature 3</div>
     </div>
   )
 }
+
+export default App
 ```
 
-## Styling Tips
+```css
+/* custom-tour.css */
+.custom-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 0;
+  width: 320px;
+  color: white;
+  box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+  overflow: hidden;
+}
 
-When creating custom UI:
+.progress {
+  height: 4px;
+  background: rgba(255, 255, 255, 0.2);
+}
 
-1. **Don't import the default styles** - Remove `import 'r-onboarding/dist/style.css'`
-2. **Use `ROnboardingStep`** - Wrap your custom UI in this component
-3. **Handle all states** - Check for `step` existence, `isFirst`, `isLast`
-4. **Add arrow manually** - See [CSS Variables](/api/css-variables) if you want the popover arrow
+.progress-bar {
+  height: 100%;
+  background: white;
+  transition: width 0.3s ease;
+}
 
-## With Exit Button
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
 
-Add an exit button to allow users to skip the tour:
+.step-count {
+  font-size: 12px;
+  opacity: 0.8;
+}
 
-```tsx
-<ROnboardingStep>
-  <div className="custom-step">
-    <button onClick={exit} className="close-btn">×</button>
-    <h3>{step.content?.title}</h3>
-    <p>{step.content?.description}</p>
-    <div className="actions">
-      {!isFirst && <button onClick={previous}>Back</button>}
-      <button onClick={next}>{isLast ? 'Done' : 'Next'}</button>
-    </div>
-  </div>
-</ROnboardingStep>
+.close-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.card-body {
+  padding: 0 20px 20px;
+}
+
+.card-body h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.card-body p {
+  font-size: 14px;
+  opacity: 0.9;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.card-footer {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: white;
+  color: #667eea;
+  border: none;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Hide the default arrow */
+.custom-card ~ [data-popper-arrow] {
+  display: none;
+}
+
+.feature {
+  padding: 40px;
+  margin: 20px;
+  background: #f5f5f5;
+  border-radius: 8px;
+}
 ```
+
+## Key Points
+
+1. **Wrap with ROnboardingStep** - Maintains positioning and overlay
+2. **Access render props** - `step`, `next`, `previous`, `exit`, `isFirst`, `isLast`, `index`
+3. **Hide default arrow** - Use CSS to hide if not needed
+4. **Full flexibility** - Any design, any layout

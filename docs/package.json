@@ -1,13 +1,15 @@
 {
   "name": "r-onboarding-docs",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
+  "description": "Documentation for r-onboarding",
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview"
   },
   "devDependencies": {
-    "vitepress": "^1.0.0"
+    "vitepress": "^1.5.0"
   }
 }

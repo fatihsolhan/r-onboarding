@@ -1,202 +1,191 @@
-# Theming
+# Theming Example
 
-This example demonstrates how to apply different themes to your onboarding tour using CSS classes and lifecycle hooks.
+Change overlay and tooltip colors dynamically between steps.
 
-## Basic Theme Switching
-
-Apply different themes to each step using `beforeStep` hooks:
+## Code
 
 ```tsx
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { ROnboardingWrapper, useROnboarding } from 'r-onboarding'
 import 'r-onboarding/dist/style.css'
-
-const themes = [
-  'step-theme-default',
-  'step-theme-accent',
-  'step-theme-warm',
-  'step-theme-cool',
-  'step-theme-purple'
-]
+import './themes.css'
 
 function App() {
   const wrapperRef = useRef(null)
-  const { start, finish } = useROnboarding(wrapperRef)
+  const { start } = useROnboarding(wrapperRef)
+  const [currentTheme, setCurrentTheme] = useState('')
 
-  const setTheme = (theme: string) => {
-    themes.forEach(t => document.body.classList.remove(t))
-    document.body.classList.add(theme)
-  }
-
-  const clearTheme = () => {
-    themes.forEach(t => document.body.classList.remove(t))
-  }
+  const clearTheme = () => setCurrentTheme('')
 
   const steps = [
     {
-      attachTo: { element: '#feature-1' },
+      attachTo: { element: '#hero' },
       content: {
         title: 'Welcome',
-        description: 'Let us show you around.'
+        description: 'Notice the subtle light overlay on this dark background.'
       },
       on: {
-        beforeStep: () => setTheme('step-theme-default')
+        beforeStep: () => setCurrentTheme('theme-default')
       }
     },
     {
-      attachTo: { element: '#feature-2' },
+      attachTo: { element: '#features' },
       content: {
-        title: 'Accent Theme',
-        description: 'This step uses the accent theme.'
+        title: 'Chartreuse Theme',
+        description: 'The overlay changed to a vibrant chartreuse color!'
       },
       on: {
-        beforeStep: () => setTheme('step-theme-accent')
+        beforeStep: () => setCurrentTheme('theme-accent')
       }
     },
     {
-      attachTo: { element: '#feature-3' },
+      attachTo: { element: '#pricing' },
       content: {
-        title: 'Warm Theme',
-        description: 'A warm, inviting color scheme.'
+        title: 'Warm Orange',
+        description: 'Now with a warm orange glow. Each step can have its own theme.'
       },
       on: {
-        beforeStep: () => setTheme('step-theme-warm')
+        beforeStep: () => setCurrentTheme('theme-warm')
+      }
+    },
+    {
+      attachTo: { element: '#cta' },
+      content: {
+        title: 'Cool Cyan',
+        description: 'Finishing with a cool cyan vibe. The possibilities are endless!'
+      },
+      on: {
+        beforeStep: () => setCurrentTheme('theme-cool')
       }
     }
   ]
 
-  const handleFinish = () => {
-    clearTheme()
-  }
-
-  const handleExit = () => {
-    clearTheme()
-    finish()
-  }
-
   return (
-    <div>
+    <div className={currentTheme}>
       <ROnboardingWrapper
         ref={wrapperRef}
         steps={steps}
-        onFinish={handleFinish}
-        onExit={handleExit}
+        onFinish={clearTheme}
+        onExit={clearTheme}
       />
-      <div id="feature-1">Feature 1</div>
-      <div id="feature-2">Feature 2</div>
-      <div id="feature-3">Feature 3</div>
-      <button onClick={start}>Start Tour</button>
+
+      {/* Demo content with dark background */}
+      <div className="dark-page">
+        <section id="hero">
+          <h1>Welcome</h1>
+        </section>
+        <section id="features">
+          <h2>Features</h2>
+        </section>
+        <section id="pricing">
+          <h2>Pricing</h2>
+        </section>
+        <section id="cta">
+          <h2>Get Started</h2>
+        </section>
+      </div>
+
+      <button onClick={() => start()}>Start Tour</button>
     </div>
   )
 }
+
+export default App
 ```
-
-## Theme CSS
-
-Define your theme styles:
 
 ```css
-/* Default theme */
-.step-theme-default {
-  --r-onboarding-step-arrow-background: #ffffff;
-}
+/* themes.css */
 
-/* Accent theme */
-.step-theme-accent {
-  --r-onboarding-step-arrow-background: #4f46e5;
-}
-
-.step-theme-accent .r-onboarding-item {
-  background: #4f46e5;
+/* Base dark page styling */
+.dark-page {
+  background: #0a0a0a;
+  min-height: 100vh;
   color: white;
 }
 
-/* Warm theme */
-.step-theme-warm {
-  --r-onboarding-step-arrow-background: #f59e0b;
+.dark-page section {
+  padding: 100px 40px;
+  border-bottom: 1px solid #222;
 }
 
-.step-theme-warm .r-onboarding-item {
-  background: linear-gradient(135deg, #f59e0b, #ef4444);
-  color: white;
+/* Default theme - light overlay for dark backgrounds */
+.theme-default {
+  --r-onboarding-overlay-fill: #f0ece4;
+  --r-onboarding-overlay-opacity: 0.12;
 }
 
-/* Cool theme */
-.step-theme-cool {
-  --r-onboarding-step-arrow-background: #06b6d4;
+/* Chartreuse accent theme */
+.theme-accent {
+  --r-onboarding-overlay-fill: #d4ff00;
+  --r-onboarding-overlay-opacity: 0.08;
 }
 
-.step-theme-cool .r-onboarding-item {
-  background: linear-gradient(135deg, #06b6d4, #3b82f6);
-  color: white;
+.theme-accent .r-onboarding-item {
+  border-color: #d4ff00;
 }
 
-/* Purple theme */
-.step-theme-purple {
-  --r-onboarding-step-arrow-background: #8b5cf6;
+.theme-accent .r-onboarding-btn-primary {
+  background: #d4ff00;
+  color: #000;
 }
 
-.step-theme-purple .r-onboarding-item {
-  background: linear-gradient(135deg, #8b5cf6, #ec4899);
-  color: white;
+/* Warm orange theme */
+.theme-warm {
+  --r-onboarding-overlay-fill: #ff6b35;
+  --r-onboarding-overlay-opacity: 0.1;
+}
+
+.theme-warm .r-onboarding-item {
+  border-color: #ff6b35;
+}
+
+.theme-warm .r-onboarding-btn-primary {
+  background: #ff6b35;
+}
+
+/* Cool cyan theme */
+.theme-cool {
+  --r-onboarding-overlay-fill: #00d4ff;
+  --r-onboarding-overlay-opacity: 0.1;
+}
+
+.theme-cool .r-onboarding-item {
+  border-color: #00d4ff;
+}
+
+.theme-cool .r-onboarding-btn-primary {
+  background: #00d4ff;
+  color: #000;
+}
+
+/* Dark tooltip styling */
+.r-onboarding-item {
+  background: #111 !important;
+  border: 1px solid #333 !important;
+  color: #f0ece4 !important;
+}
+
+.r-onboarding-item__description {
+  color: #888 !important;
+}
+
+.r-onboarding-btn-secondary {
+  border-color: #333 !important;
+  color: #f0ece4 !important;
 }
 ```
 
-## Dark Mode Support
+## CSS Variables Reference
 
-Adjust themes based on system preference:
+| Variable | Description |
+|----------|-------------|
+| `--r-onboarding-overlay-fill` | Overlay color |
+| `--r-onboarding-overlay-opacity` | Overlay opacity (0-1) |
+| `--r-onboarding-step-arrow-background` | Arrow color |
 
-```css
-@media (prefers-color-scheme: dark) {
-  :root {
-    --r-onboarding-step-arrow-background: #1f2937;
-  }
+## Key Points
 
-  .r-onboarding-item {
-    background: #1f2937;
-    color: #f9fafb;
-  }
-}
-```
-
-## Custom Theme with Render Props
-
-For complete control, use render props with your theme:
-
-```tsx
-<ROnboardingWrapper ref={wrapperRef} steps={steps}>
-  {({ step, next, previous, exit, isFirst, isLast, index }) => {
-    if (!step) return null
-
-    const themeClass = step.content?.theme || 'default'
-
-    return (
-      <ROnboardingStep>
-        <div className={`custom-tooltip theme-${themeClass}`}>
-          <h3>{step.content?.title}</h3>
-          <p>{step.content?.description}</p>
-          <div className="actions">
-            {!isFirst && <button onClick={previous}>Back</button>}
-            <button onClick={next}>{isLast ? 'Done' : 'Next'}</button>
-          </div>
-        </div>
-      </ROnboardingStep>
-    )
-  }}
-</ROnboardingWrapper>
-```
-
-With custom theme properties in steps:
-
-```tsx
-const steps = [
-  {
-    attachTo: { element: '#feature' },
-    content: {
-      title: 'Themed Step',
-      description: 'This step has a custom theme.',
-      theme: 'accent' // Custom property
-    }
-  }
-]
-```
+1. **Use CSS classes** - Apply theme classes to a parent element
+2. **Switch in hooks** - Use `beforeStep` to change themes
+3. **Clean up** - Reset theme on `onFinish` and `onExit`
+4. **Consistent styling** - Theme both overlay and tooltip together

@@ -28,7 +28,7 @@ features:
     details: beforeStep and afterStep hooks for async operations, analytics, and state management.
   - icon: 🔒
     title: Focus Management
-    details: Optional disableInteraction to keep users focused on the tour interface.
+    details: Optional focus trap to keep keyboard navigation within the tour interface.
   - icon: 📦
     title: TypeScript Ready
     details: Fully typed with comprehensive TypeScript definitions for excellent developer experience.

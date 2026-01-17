@@ -8,7 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "r-onboarding": "^1.0.0",
+    "r-onboarding": "link:..",
     "react": "^18.0.0",
     "react-dom": "^18.0.0"
   },

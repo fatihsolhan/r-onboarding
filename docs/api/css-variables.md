@@ -1,17 +1,46 @@
 # CSS Variables
 
-Customize the appearance of r-onboarding using CSS variables.
+Customize r-onboarding appearance using CSS custom properties.
 
 ## Overlay Variables
 
-### `--r-onboarding-overlay-z`
+### `--r-onboarding-overlay-fill`
 
-- **Default:** `10`
-- **Description:** Z-index of the overlay background
+The color of the overlay background.
 
 ```css
 :root {
-  --r-onboarding-overlay-z: 30;
+  --r-onboarding-overlay-fill: black;  /* Default */
+}
+
+/* Light overlay for dark backgrounds */
+.dark-theme {
+  --r-onboarding-overlay-fill: white;
+}
+
+/* Colored overlay */
+.accent-theme {
+  --r-onboarding-overlay-fill: #d4ff00;
+}
+```
+
+### `--r-onboarding-overlay-opacity`
+
+Opacity of the overlay (0 to 1).
+
+```css
+:root {
+  --r-onboarding-overlay-opacity: 0.5;  /* Default */
+}
+
+/* Subtle overlay */
+.subtle {
+  --r-onboarding-overlay-opacity: 0.2;
+}
+
+/* Strong overlay */
+.strong {
+  --r-onboarding-overlay-opacity: 0.8;
 }
 ```
 
@@ -19,23 +48,31 @@ Customize the appearance of r-onboarding using CSS variables.
 
 ### `--r-onboarding-step-arrow-background`
 
-- **Default:** `white`
-- **Description:** Background color of the tooltip arrow
+Background color of the tooltip arrow.
 
 ```css
 :root {
-  --r-onboarding-step-arrow-background: #f5f5f5;
+  --r-onboarding-step-arrow-background: white;  /* Default */
+}
+
+/* Dark tooltip */
+.dark-tooltip {
+  --r-onboarding-step-arrow-background: #1a1a1a;
 }
 ```
 
 ### `--r-onboarding-step-arrow-size`
 
-- **Default:** `10px`
-- **Description:** Size of the tooltip arrow
+Size of the tooltip arrow.
 
 ```css
 :root {
-  --r-onboarding-step-arrow-size: 12px;
+  --r-onboarding-step-arrow-size: 10px;  /* Default */
+}
+
+/* Larger arrow */
+.large-arrow {
+  --r-onboarding-step-arrow-size: 14px;
 }
 ```
 
@@ -43,68 +80,96 @@ Customize the appearance of r-onboarding using CSS variables.
 
 ### `--r-onboarding-step-z`
 
-- **Default:** `20`
-- **Description:** Z-index of the step tooltip
+Z-index of the step tooltip.
 
 ```css
 :root {
-  --r-onboarding-step-z: 40;
+  --r-onboarding-step-z: 20;  /* Default */
+}
+
+/* Higher z-index for modals */
+.above-modals {
+  --r-onboarding-step-z: 10000;
 }
 ```
 
-::: warning
-Make sure the step element's z-index is always greater than the overlay element's z-index.
-:::
+## Theme Examples
 
-## Complete Example
+### Dark Theme
 
 ```css
-:root {
-  /* Overlay */
-  --r-onboarding-overlay-z: 100;
-
-  /* Step tooltip */
-  --r-onboarding-step-z: 110;
-
-  /* Arrow */
-  --r-onboarding-step-arrow-size: 12px;
-  --r-onboarding-step-arrow-background: #ffffff;
+.dark-onboarding {
+  --r-onboarding-overlay-fill: white;
+  --r-onboarding-overlay-opacity: 0.1;
+  --r-onboarding-step-arrow-background: #1a1a1a;
 }
 ```
 
-## Arrow CSS for Custom UI
-
-If you're using custom UI and want to include the tooltip arrow, add this CSS:
+### Colorful Theme
 
 ```css
-[data-r-onboarding-wrapper] [data-popper-arrow]::before {
-  content: '';
-  background: var(--r-onboarding-step-arrow-background, white);
-  top: 0;
-  left: 0;
-  transition: transform 0.2s ease-out, visibility 0.2s ease-out;
-  visibility: visible;
-  transform: translateX(0px) rotate(45deg);
-  transform-origin: center;
-  width: var(--r-onboarding-step-arrow-size, 10px);
-  height: var(--r-onboarding-step-arrow-size, 10px);
-  position: absolute;
-  z-index: -1;
+.colorful-onboarding {
+  --r-onboarding-overlay-fill: #6366f1;
+  --r-onboarding-overlay-opacity: 0.15;
+  --r-onboarding-step-arrow-background: #6366f1;
+}
+```
+
+### Minimal Theme
+
+```css
+.minimal-onboarding {
+  --r-onboarding-overlay-fill: black;
+  --r-onboarding-overlay-opacity: 0.3;
+  --r-onboarding-step-arrow-size: 8px;
+}
+```
+
+## Dynamic Theming
+
+Change themes per-step using lifecycle hooks:
+
+```tsx
+const themes = ['default', 'accent', 'warm', 'cool']
+
+const steps = [
+  {
+    attachTo: { element: '#step-1' },
+    on: {
+      beforeStep: () => {
+        document.body.className = 'theme-default'
+      }
+    }
+  },
+  {
+    attachTo: { element: '#step-2' },
+    on: {
+      beforeStep: () => {
+        document.body.className = 'theme-accent'
+      }
+    }
+  }
+]
+```
+
+```css
+.theme-default {
+  --r-onboarding-overlay-fill: black;
+  --r-onboarding-overlay-opacity: 0.5;
 }
 
-[data-r-onboarding-wrapper] [data-popper-placement^='top'] > [data-popper-arrow] {
-  bottom: 5px;
+.theme-accent {
+  --r-onboarding-overlay-fill: #d4ff00;
+  --r-onboarding-overlay-opacity: 0.08;
 }
 
-[data-r-onboarding-wrapper] [data-popper-placement^='right'] > [data-popper-arrow] {
-  left: -4px;
+.theme-warm {
+  --r-onboarding-overlay-fill: #ff6b35;
+  --r-onboarding-overlay-opacity: 0.1;
 }
 
-[data-r-onboarding-wrapper] [data-popper-placement^='bottom'] > [data-popper-arrow] {
-  top: -4px;
-}
-
-[data-r-onboarding-wrapper] [data-popper-placement^='left'] > [data-popper-arrow] {
-  right: -4px;
+.theme-cool {
+  --r-onboarding-overlay-fill: #00d4ff;
+  --r-onboarding-overlay-opacity: 0.1;
 }
 ```

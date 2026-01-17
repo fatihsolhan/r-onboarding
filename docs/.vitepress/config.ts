@@ -1,32 +1,37 @@
 import { defineConfig } from 'vitepress'
+import pkg from '../../package.json'
+
+const majorVersion = pkg.version.split('.')[0]
 
 export default defineConfig({
   title: 'r-onboarding',
   description: 'A fully-typed, customizable onboarding component for React',
+
   head: [
-    ['link', { rel: 'icon', href: '/icon.png' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.googleapis.com' }],
     ['link', { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' }],
-    ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono&display=swap', rel: 'stylesheet' }]
+    ['link', { href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap', rel: 'stylesheet' }]
   ],
+
   themeConfig: {
-    logo: {
-      light: '/logo-light.png',
-      dark: '/logo-dark.png'
-    },
-    search: {
-      provider: 'local'
-    },
     nav: [
       { text: 'Guide', link: '/guide/getting-started' },
-      { text: 'API', link: '/api/steps' },
-      { text: 'Examples', link: '/examples/basic-tour' }
+      { text: 'API', link: '/api/props' },
+      { text: 'Examples', link: '/examples/basic' },
+      {
+        text: `v${majorVersion}.x`,
+        items: [
+          { text: 'Changelog', link: 'https://github.com/fatihsolhan/r-onboarding/releases' }
+        ]
+      }
     ],
+
     sidebar: {
       '/guide/': [
         {
           text: 'Introduction',
           items: [
+            { text: 'What is r-onboarding?', link: '/guide/introduction' },
             { text: 'Getting Started', link: '/guide/getting-started' }
           ]
         },
@@ -35,7 +40,7 @@ export default defineConfig({
           items: [
             { text: 'Basic Usage', link: '/guide/basic-usage' },
             { text: 'Customization', link: '/guide/customization' },
-            { text: 'Custom Slots', link: '/guide/custom-slots' }
+            { text: 'Custom UI with Render Props', link: '/guide/custom-slots' }
           ]
         }
       ],
@@ -43,7 +48,8 @@ export default defineConfig({
         {
           text: 'API Reference',
           items: [
-            { text: 'Steps', link: '/api/steps' },
+            { text: 'Props', link: '/api/props' },
+            { text: 'Steps Configuration', link: '/api/steps' },
             { text: 'Options', link: '/api/options' },
             { text: 'Hooks', link: '/api/hooks' },
             { text: 'Events', link: '/api/events' },
@@ -56,23 +62,31 @@ export default defineConfig({
         {
           text: 'Examples',
           items: [
-            { text: 'Basic Tour', link: '/examples/basic-tour' },
+            { text: 'Basic Tour', link: '/examples/basic' },
             { text: 'Custom UI', link: '/examples/custom-ui' },
             { text: 'Theming', link: '/examples/theming' }
           ]
         }
       ]
     },
+
     socialLinks: [
       { icon: 'github', link: 'https://github.com/fatihsolhan/r-onboarding' },
-      { icon: 'x', link: 'https://twitter.com/fatihsolhann' }
+      { icon: 'x', link: 'https://x.com/fatihsolhann' }
     ],
-    editLink: {
-      pattern: 'https://github.com/fatihsolhan/r-onboarding/edit/main/docs/:path'
-    },
+
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright 2022-present Fatih Solhan'
+      copyright: 'Copyright © 2022-present Fatih Solhan'
+    },
+
+    search: {
+      provider: 'local'
+    },
+
+    editLink: {
+      pattern: 'https://github.com/fatihsolhan/r-onboarding/edit/main/docs/:path',
+      text: 'Edit this page on GitHub'
     }
   }
 })

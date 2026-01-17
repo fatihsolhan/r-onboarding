@@ -1,5 +1,12 @@
 import { vi } from 'vitest';
 
+// Mock ResizeObserver which is not implemented in jsdom
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+
 // Mock scrollIntoView which is not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
 

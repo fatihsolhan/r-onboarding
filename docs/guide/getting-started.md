@@ -20,18 +20,14 @@ pnpm add r-onboarding
 
 ## Basic Setup
 
-### Step 1: Import Components and Styles
-
-Begin by importing the necessary components and stylesheet:
+### 1. Import the component and styles
 
 ```tsx
 import { ROnboardingWrapper, useROnboarding } from 'r-onboarding'
 import 'r-onboarding/dist/style.css'
 ```
 
-### Step 2: Configure Tour Steps
-
-Define an array of steps that specify where highlights should appear and what content displays:
+### 2. Define your steps
 
 ```tsx
 const steps = [
@@ -52,9 +48,7 @@ const steps = [
 ]
 ```
 
-### Step 3: Implement Wrapper and Hook
-
-Set up the wrapper component and initialize the hook to control tour flow:
+### 3. Set up the wrapper and hook
 
 ```tsx
 import { useRef, useEffect } from 'react'
@@ -68,27 +62,22 @@ function App() {
   const steps = [
     {
       attachTo: { element: '#step-1' },
-      content: {
-        title: 'Welcome!',
-        description: 'Let us show you around.'
-      }
+      content: { title: 'Welcome!', description: 'Let us show you around.' }
     },
     {
       attachTo: { element: '#step-2' },
-      content: {
-        title: 'Features',
-        description: 'Here are the key features.'
-      }
+      content: { title: 'Features', description: 'Here are the key features.' }
     }
   ]
 
-  useEffect(() => {
-    start()
-  }, [])
+  // Start the tour when component mounts
+  useEffect(() => start(), [])
 
   return (
     <div>
       <ROnboardingWrapper ref={wrapperRef} steps={steps} />
+
+      {/* Your app content */}
       <button id="step-1">First Element</button>
       <div id="step-2">Second Element</div>
     </div>
@@ -96,10 +85,18 @@ function App() {
 }
 ```
 
-## Core Hook Methods
+## Hook Methods
 
-The `useROnboarding` hook offers three primary methods:
+The `useROnboarding` hook provides these methods:
 
-- **`start()`** – Begin the tour sequence from the first step
-- **`finish()`** – Terminate the active tour
-- **`goToStep(index)`** – Navigate directly to a specific step number
+| Method | Description |
+|--------|-------------|
+| `start()` | Start the tour from the beginning |
+| `finish()` | End the tour |
+| `goToStep(index)` | Jump to a specific step |
+
+## Next Steps
+
+- [Basic Usage](/guide/basic-usage) - Learn about step configuration
+- [Customization](/guide/customization) - Customize the overlay and positioning
+- [Custom UI with Render Props](/guide/custom-slots) - Build your own step UI

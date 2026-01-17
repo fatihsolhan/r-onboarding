@@ -4,7 +4,7 @@ import { StepEntity } from '@/types/StepEntity';
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { useEffect, useRef } from 'react';
 
-describe('disableInteraction option', () => {
+describe('preventOverlayInteraction option', () => {
   const steps = [
     {
       attachTo: { element: '#foo' },
@@ -24,7 +24,7 @@ describe('disableInteraction option', () => {
     document.body.style.pointerEvents = '';
   });
 
-  it('should set pointer-events to none on body when disableInteraction is true', async () => {
+  it('should set pointer-events to none on body when preventOverlayInteraction is true', async () => {
     function TestComponent() {
       const wrapperRef = useRef(null);
       const { start } = useROnboarding(wrapperRef);
@@ -36,7 +36,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={steps}
-            options={{ disableInteraction: true }}
+            options={{ overlay: { preventOverlayInteraction: true } }}
           />
         </div>
       );
@@ -49,7 +49,7 @@ describe('disableInteraction option', () => {
     });
   });
 
-  it('should not set pointer-events when disableInteraction is false', async () => {
+  it('should not set pointer-events when preventOverlayInteraction is false', async () => {
     function TestComponent() {
       const wrapperRef = useRef(null);
       const { start } = useROnboarding(wrapperRef);
@@ -61,7 +61,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={steps}
-            options={{ disableInteraction: false }}
+            options={{ overlay: { preventOverlayInteraction: false } }}
           />
         </div>
       );
@@ -86,7 +86,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={steps}
-            options={{ disableInteraction: true }}
+            options={{ overlay: { preventOverlayInteraction: true } }}
           />
         </div>
       );
@@ -127,7 +127,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={steps}
-            options={{ disableInteraction: true }}
+            options={{ overlay: { preventOverlayInteraction: true } }}
           />
         </div>
       );
@@ -158,17 +158,17 @@ describe('disableInteraction option', () => {
     });
   });
 
-  it('should allow step-level disableInteraction override', async () => {
+  it('should allow step-level preventOverlayInteraction override', async () => {
     const stepsWithOverride = [
       {
         attachTo: { element: '#foo' },
         content: { title: 'Step 1', description: 'Description 1' },
-        options: { disableInteraction: true }, // Enable for this step
+        options: { overlay: { preventOverlayInteraction: true } }, // Enable for this step
       },
       {
         attachTo: { element: '#bar' },
         content: { title: 'Step 2', description: 'Description 2' },
-        options: { disableInteraction: false }, // Disable for this step
+        options: { overlay: { preventOverlayInteraction: false } }, // Disable for this step
       },
     ] as StepEntity[];
 
@@ -183,7 +183,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={stepsWithOverride}
-            options={{ disableInteraction: false }} // Global: disabled
+            options={{ overlay: { preventOverlayInteraction: false } }} // Global: disabled
           />
         </div>
       );
@@ -208,7 +208,7 @@ describe('disableInteraction option', () => {
     });
   });
 
-  it('should keep step element interactive when disableInteraction is true', async () => {
+  it('should keep step element interactive when preventOverlayInteraction is true', async () => {
     function TestComponent() {
       const wrapperRef = useRef(null);
       const { start } = useROnboarding(wrapperRef);
@@ -220,7 +220,7 @@ describe('disableInteraction option', () => {
           <ROnboardingWrapper
             ref={wrapperRef}
             steps={steps}
-            options={{ disableInteraction: true }}
+            options={{ overlay: { preventOverlayInteraction: true } }}
           />
         </div>
       );

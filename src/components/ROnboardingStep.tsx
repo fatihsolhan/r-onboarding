@@ -1,123 +1,129 @@
 import { ROnboardingContext } from "@/contexts";
 import useGetElement from "@/hooks/useGetElement";
-import useSetClassName from "@/hooks/useSetClassName";
 import useSvgOverlay from "@/hooks/useSvgOverlay";
-import { defaultROnboardingWrapperOptions, HookOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
-import { createPopper } from "@popperjs/core";
+import { defaultROnboardingWrapperOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
+import { createPopper, Instance as PopperInstance } from "@popperjs/core";
 import merge from "lodash.merge";
-import { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useContext, useLayoutEffect, useMemo, useRef, useState, ReactNode } from "react";
 
-export default function ({ children }: { children?: JSX.Element }) {
+export interface ROnboardingStepProps {
+  children?: ReactNode;
+}
+
+const waitForScrollEnd = (element: Element, callback: () => void) => {
+  let lastTop = element.getBoundingClientRect().top
+  let stableFrames = 0
+  let rafId: number
+  let timeoutId: ReturnType<typeof setTimeout>
+
+  const check = () => {
+    const currentTop = element.getBoundingClientRect().top
+    if (Math.abs(currentTop - lastTop) < 1) {
+      if (++stableFrames >= 3) {
+        clearTimeout(timeoutId)
+        callback()
+        return
+      }
+    } else {
+      stableFrames = 0
+    }
+    lastTop = currentTop
+    rafId = requestAnimationFrame(check)
+  }
+
+  rafId = requestAnimationFrame(check)
+  timeoutId = setTimeout(() => {
+    cancelAnimationFrame(rafId)
+    callback()
+  }, 1000)
+}
+
+export default function ROnboardingStep({ children }: ROnboardingStepProps) {
   const { path, updatePath } = useSvgOverlay()
   const [show, setShow] = useState(false)
+  const [ready, setReady] = useState(false)
   const context = useContext(ROnboardingContext)
-  const stepElement = useRef(null)
-  const { setTargetElementClassName, unsetTargetElementClassName } = useSetClassName()
-  const [buttonLabels, setButtonLabels] = useState({
-    previous: defaultROnboardingWrapperOptions.labels?.previousButton,
-    next: defaultROnboardingWrapperOptions.labels?.nextButton,
-    finish: defaultROnboardingWrapperOptions.labels?.finishButton,
-  })
-  const [mergedOptions, setMergedOptions] = useState<ROnboardingWrapperOptions>({})
-  const previousBodyPointerEvents = useRef<string>('')
+  const stepElement = useRef<HTMLDivElement>(null)
+  const popperInstance = useRef<PopperInstance | null>(null)
 
-  useEffect(() => {
-    beforeStepStart()
-    return () => {
-      beforeStepEnd(context.direction)
-      restoreBodyPointerEvents()
+  const mergedOptions = useMemo(() => {
+    return merge({}, context.options, context.step?.options) as ROnboardingWrapperOptions
+  }, [context.options, context.step?.options])
+
+  const buttonLabels = useMemo(() => ({
+    previous: mergedOptions?.labels?.previousButton ?? defaultROnboardingWrapperOptions.labels?.previousButton,
+    next: mergedOptions?.labels?.nextButton ?? defaultROnboardingWrapperOptions.labels?.nextButton,
+    finish: mergedOptions?.labels?.finishButton ?? defaultROnboardingWrapperOptions.labels?.finishButton,
+  }), [mergedOptions])
+
+  const updatePositions = useCallback((element: Element) => {
+    popperInstance.current?.update()
+    if (mergedOptions?.overlay?.enabled) {
+      updatePath(element, {
+        padding: mergedOptions?.overlay?.padding,
+        borderRadius: mergedOptions?.overlay?.borderRadius,
+      })
     }
-  }, [])
+  }, [mergedOptions, updatePath])
+
+  const attachElement = useCallback(async () => {
+    if (!context.step) return
+
+    await new Promise(resolve => requestAnimationFrame(resolve))
+
+    const element = useGetElement(context.step.attachTo?.element)
+    if (!element || !stepElement.current) return
+
+    popperInstance.current?.destroy()
+    popperInstance.current = null
+
+    const initPopper = async () => {
+      setReady(false)
+      setShow(true)
+
+      await new Promise(resolve => requestAnimationFrame(resolve))
+
+      if (!stepElement.current) return
+
+      popperInstance.current = createPopper(element, stepElement.current, mergedOptions.popper)
+      await popperInstance.current.update()
+      updatePositions(element)
+      setReady(true)
+    }
+
+    const scrollOptions = mergedOptions?.scrollToStep
+    if (scrollOptions?.enabled) {
+      setShow(false)
+      setReady(false)
+
+      await new Promise(resolve => requestAnimationFrame(resolve))
+
+      element.scrollIntoView?.(scrollOptions.options)
+
+      if (scrollOptions.options?.behavior === 'smooth') {
+        waitForScrollEnd(element, initPopper)
+      } else {
+        initPopper()
+      }
+    } else {
+      initPopper()
+    }
+  }, [context.step, mergedOptions, updatePositions])
 
   useLayoutEffect(() => {
-    if (!show) return
     attachElement()
-  }, [show])
 
-  const onNext = () => {
-    beforeStepEnd('forward');
-    context.nextStep()
-  }
-
-  const onPrevious = () => {
-    beforeStepEnd('backward');
-    context.previousStep()
-  }
-
-  const onExit = () => {
-    beforeStepEnd(context.direction);
-    context.exit()
-  }
-
-  const getHookOptions = (direction: 'forward' | 'backward' = context.direction): HookOptions => ({
-    index: context.index,
-    step: context.step!,
-    direction,
-  })
-
-  const beforeStepStart = async () => {
-    if (context.step?.on?.beforeStep) {
-      await context.step.on.beforeStep(getHookOptions());
+    return () => {
+      popperInstance.current?.destroy()
+      popperInstance.current = null
     }
-    const element = useGetElement(context.step?.attachTo?.element);
-    if (!element || !stepElement.current) return
-    setShow(true)
-  }
+  }, [context.step])
 
-  const attachElement = () => {
-    const element = useGetElement(context.step?.attachTo?.element);
-    if (!element || !stepElement.current) return
-    const options = merge({}, context.options, context.step?.options)
-    setMergedOptions(options)
-    setButtonLabels({
-      previous: options?.labels?.previousButton,
-      next: options?.labels?.nextButton,
-      finish: options?.labels?.finishButton,
-    })
-    createPopper(element, stepElement.current!, options.popper);
-    if (options?.scrollToStep?.enabled) {
-      element.scrollIntoView(options?.scrollToStep?.options)
-    }
-    if (options?.overlay?.enabled) {
-      updatePath(element, {
-        padding: options?.overlay?.padding,
-        borderRadius: options?.overlay?.borderRadius,
-      });
-    }
-    setTargetElementClassName(element);
-
-    // Handle disableInteraction
-    if (options?.disableInteraction) {
-      previousBodyPointerEvents.current = document.body.style.pointerEvents
-      document.body.style.pointerEvents = 'none'
-    }
-  };
-
-  const restoreBodyPointerEvents = () => {
-    if (document.body.style.pointerEvents === 'none') {
-      document.body.style.pointerEvents = previousBodyPointerEvents.current || ''
-    }
-  }
-
-  const beforeStepEnd = (direction: 'forward' | 'backward' = context.direction) => {
-    if (context.step?.on?.afterStep) {
-      context.step.on.afterStep(getHookOptions(direction));
-    }
-    unsetTargetElementClassName(useGetElement(context?.step?.attachTo.element), context?.step?.attachTo.classList)
-    restoreBodyPointerEvents()
-  }
-
-  const shouldShowPreviousButton = () => {
-    if (context.isFirstStep) return false
-    if (mergedOptions?.hideButtons?.previous) return false
-    return true
-  }
-
-  const shouldShowNextButton = () => {
-    if (context.isLastStep) return true // Always show finish button
-    if (mergedOptions?.hideButtons?.next) return false
-    return true
-  }
+  const isButtonVisible = useMemo(() => ({
+    previous: !mergedOptions?.hideButtons?.previous,
+    next: !mergedOptions?.hideButtons?.next,
+    exit: !mergedOptions?.hideButtons?.exit
+  }), [mergedOptions])
 
   const renderTitle = () => {
     if (!context?.step?.content?.title) return null
@@ -153,19 +159,30 @@ export default function ({ children }: { children?: JSX.Element }) {
     )
   }
 
+  if (!context.step) return null
+
   return (
-    <div className={show ? '' : 'hidden'}>
-      <svg style={{ width: '100%', height: '100%', position: 'fixed', top: 0, left: 0, opacity: '0.5', zIndex: 'var(--r-onboarding-overlay-z, 10)', pointerEvents: 'none' }}>
+    <div style={{ display: show ? 'block' : 'none', visibility: ready ? 'visible' : 'hidden' }}>
+      <svg style={{
+        width: '100%',
+        height: '100%',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        fill: 'var(--r-onboarding-overlay-fill, black)',
+        opacity: 'var(--r-onboarding-overlay-opacity, 0.5)',
+        zIndex: 'var(--r-onboarding-overlay-z, 10)',
+        pointerEvents: 'none'
+      }}>
         <path d={path} />
       </svg>
-      <div style={{ position: 'relative', zIndex: 'var(--r-onboarding-step-z, 20)', pointerEvents: 'auto' }}>
-        <div ref={stepElement}>
-          {context.step ?
-            children ||
-            <div className="r-onboarding-item">
-              <div className="r-onboarding-item__header">
-                {renderTitle()}
-                <button onClick={onExit} className="r-onboarding-item__header-close">
+      <div ref={stepElement} style={{ position: 'relative', zIndex: 'var(--r-onboarding-step-z, 20)' }}>
+        {children || (
+          <div className="r-onboarding-item">
+            <div className="r-onboarding-item__header">
+              {renderTitle()}
+              {isButtonVisible.exit && (
+                <button onClick={context.exit} aria-label="Close" className="r-onboarding-item__header-close">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4"
@@ -181,28 +198,28 @@ export default function ({ children }: { children?: JSX.Element }) {
                     />
                   </svg>
                 </button>
-              </div>
-              {renderDescription()}
-              <div className="r-onboarding-item__actions">
-                {shouldShowPreviousButton() &&
-                  <button
-                    type="button"
-                    onClick={onPrevious}
-                    className="r-onboarding-btn-secondary"
-                  >{buttonLabels.previous}</button>
-                }
-                {shouldShowNextButton() &&
-                  <button
-                    onClick={onNext}
-                    type="button"
-                    className="r-onboarding-btn-primary"
-                  >{context.isLastStep ? buttonLabels.finish : buttonLabels.next}</button>
-                }
-              </div>
+              )}
             </div>
-            : null}
-          <div data-popper-arrow />
-        </div>
+            {renderDescription()}
+            <div className="r-onboarding-item__actions">
+              {!context.isFirstStep && isButtonVisible.previous && (
+                <button
+                  type="button"
+                  onClick={context.previous}
+                  className="r-onboarding-btn-secondary"
+                >{buttonLabels.previous}</button>
+              )}
+              {(context.isLastStep || isButtonVisible.next) && (
+                <button
+                  onClick={context.isLastStep ? context.finish : context.next}
+                  type="button"
+                  className="r-onboarding-btn-primary"
+                >{context.isLastStep ? buttonLabels.finish : buttonLabels.next}</button>
+              )}
+            </div>
+          </div>
+        )}
+        <div data-popper-arrow />
       </div>
     </div>
   )
