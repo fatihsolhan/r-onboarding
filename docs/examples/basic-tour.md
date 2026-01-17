@@ -1,4 +1,4 @@
-# Basic Example
+# Basic Tour
 
 This is a basic example with default styles.
 

@@ -4,7 +4,7 @@ When using custom UI, the following render props are available:
 
 | Name | Type | Description |
 | :-------- | :-------- | :-------- |
-| `step` | [Step](/props/steps#step-structure) | Current step object |
+| `step` | [Step](/api/steps#step-structure) | Current step object |
 | `next` | `Function` | Moves to the next step |
 | `previous` | `Function` | Moves to the previous step |
 | `exit` | `Function` | Exits from onboarding |

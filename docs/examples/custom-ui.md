@@ -97,7 +97,7 @@ When creating custom UI:
 1. **Don't import the default styles** - Remove `import 'r-onboarding/dist/style.css'`
 2. **Use `ROnboardingStep`** - Wrap your custom UI in this component
 3. **Handle all states** - Check for `step` existence, `isFirst`, `isLast`
-4. **Add arrow manually** - See [Arrow CSS](/css/arrow) if you want the popover arrow
+4. **Add arrow manually** - See [CSS Variables](/api/css-variables) if you want the popover arrow
 
 ## With Exit Button
 

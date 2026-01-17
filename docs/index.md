@@ -3,23 +3,33 @@ layout: home
 
 hero:
   name: r-onboarding
-  text: React Onboarding Component
-  tagline: A super-slim, fully-typed onboarding component for React
+  text: Onboarding for React
+  tagline: A fully-typed, customizable onboarding component with SVG overlays, smart positioning, and accessibility built-in.
   actions:
     - theme: brand
       text: Get Started
-      link: /guide/installation
+      link: /guide/getting-started
     - theme: alt
       text: View on GitHub
       link: https://github.com/fatihsolhan/r-onboarding
 
 features:
-  - title: Fully Customizable
-    details: Use render props to create your own custom UI for onboarding steps
-  - title: TypeScript Support
-    details: Built with TypeScript for complete type safety and IDE support
-  - title: Lightweight
-    details: Minimal bundle size with no unnecessary dependencies
-  - title: Event Callbacks
-    details: Hook into lifecycle events with onFinish, onExit, and step callbacks
+  - icon: 🎯
+    title: SVG Overlay
+    details: Precise element highlighting with customizable padding, border radius, and overlay opacity.
+  - icon: 💬
+    title: Smart Positioning
+    details: Powered by Popper.js for automatic tooltip positioning that adapts to viewport boundaries.
+  - icon: 🎨
+    title: Fully Customizable
+    details: Complete control over step appearance with render props. Build any design you want.
+  - icon: ⚡
+    title: Lifecycle Hooks
+    details: beforeStep and afterStep hooks for async operations, analytics, and state management.
+  - icon: 🔒
+    title: Focus Management
+    details: Optional disableInteraction to keep users focused on the tour interface.
+  - icon: 📦
+    title: TypeScript Ready
+    details: Fully typed with comprehensive TypeScript definitions for excellent developer experience.
 ---
