@@ -17,6 +17,19 @@ export interface SvgOverlayOptions {
   }
 }
 
+export interface HideButtonsOptions {
+  previous?: boolean
+  next?: boolean
+}
+
+export type StepDirection = 'forward' | 'backward';
+
+export interface HookOptions {
+  index: number
+  step: StepEntity
+  direction: StepDirection
+}
+
 export interface ROnboardingWrapperOptions {
   popper?: Parameters<typeof createPopper>[2]
   overlay?: SvgOverlayOptions,
@@ -28,7 +41,9 @@ export interface ROnboardingWrapperOptions {
     previousButton?: string
     nextButton?: string
     finishButton?: string
-  }
+  },
+  hideButtons?: HideButtonsOptions,
+  disableInteraction?: boolean
 }
 
 export const defaultROnboardingWrapperOptions: ROnboardingWrapperOptions = {
@@ -62,6 +77,8 @@ export interface ROnboardingContextEntity {
   isFirstStep: boolean
   isLastStep: boolean
   index: number
+  direction: StepDirection
+  steps: StepEntity[]
 }
 
 export interface ROnboardingStepRenderProps {
