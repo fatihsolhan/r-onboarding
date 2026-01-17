@@ -73,7 +73,7 @@ Callback fired when the user exits the tour early. Receives the current step ind
 - **Type:** `(props: RenderProps) => ReactNode`
 - **Required:** No
 
-Render function for custom step UI. See [Render Props](/api/render-props) for details.
+Render function for custom step UI. See [Slots](/api/slots) for details.
 
 ```tsx
 <ROnboardingWrapper ref={wrapperRef} steps={steps}>

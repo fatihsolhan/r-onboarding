@@ -1,12 +1,12 @@
-# Render Props
+# Slots
 
 r-onboarding provides render props for complete UI customization.
 
-## Default Render Prop
+## Default Slot
 
-The main render prop for customizing step appearance.
+The main slot for customizing step appearance.
 
-### Render Props
+### Slot Props
 
 | Prop | Type | Description |
 |------|------|-------------|
