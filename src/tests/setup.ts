@@ -8,12 +8,13 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock requestAnimationFrame and cancelAnimationFrame
-global.requestAnimationFrame = vi.fn((callback) => {
-  return setTimeout(callback, 0);
-});
-global.cancelAnimationFrame = vi.fn((id) => {
+// Use direct function assignment instead of vi.fn() to ensure it works in recursive calls
+global.requestAnimationFrame = (callback: FrameRequestCallback): number => {
+  return setTimeout(() => callback(performance.now()), 0) as unknown as number;
+};
+global.cancelAnimationFrame = (id: number): void => {
   clearTimeout(id);
-});
+};
 
 // Mock scrollIntoView which is not implemented in jsdom
 Element.prototype.scrollIntoView = vi.fn();
