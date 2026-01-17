@@ -1,17 +1,13 @@
 {
   "name": "r-onboarding-docs",
   "version": "1.0.0",
-  "description": "Docs for r-onboarding",
-  "author": "Fatih Solhan",
+  "private": true,
   "scripts": {
-    "dev": "nuxt",
-    "build": "nuxt build",
-    "start": "nuxt start",
-    "generate": "nuxt generate"
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "preview": "vitepress preview"
   },
-  "dependencies": {
-    "docus": "^0.5.14",
-    "nuxt": "^2.15.6"
-  },
-  "devDependencies": {}
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  }
 }
