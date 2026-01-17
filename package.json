@@ -63,6 +63,7 @@
     "c8": "^7.12.0",
     "cz-conventional-changelog": "3.3.0",
     "happy-dom": "^6.0.4",
+    "jsdom": "^27.4.0",
     "lodash.merge": "^4.6.2",
     "postcss": "^8.4.12",
     "react": "^18.0.0",
