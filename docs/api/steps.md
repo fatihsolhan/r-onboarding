@@ -37,7 +37,7 @@
 | `on` | `Object` | **Optional** | |
 | `on.beforeStep` | `Function` \| `AsyncFunction` | **Optional** | Function to run before showing the step |
 | `on.afterStep` | `Function` | **Optional** | Function to run after showing the step |
-| `options` | [Options](/props/options) | **Optional** | Options for step. Overrides the `ROnboardingWrapper` options |
+| `options` | [Options](/api/options) | **Optional** | Options for step. Overrides the `ROnboardingWrapper` options |
 
 ## Lifecycle Hook Options
 
