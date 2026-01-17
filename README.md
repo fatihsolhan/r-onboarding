@@ -12,7 +12,7 @@ A fully-typed, customizable onboarding component for React
 
 [Demo](https://r-onboarding.fatihsolhan.com/) · [Documentation](https://r-onboarding-docs.fatihsolhan.com/)
 
-<img src="demo/src/assets/screenshot.png" alt="r-onboarding screenshot" width="600" />
+<img src="demo/src/assets/screenshot.png" alt="r-onboarding screenshot" />
 
 </div>
 
