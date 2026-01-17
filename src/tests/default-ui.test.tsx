@@ -1,7 +1,7 @@
 import { ROnboardingWrapper } from '@/components/index';
 import useROnboarding from '@/hooks/useROnboarding';
 import { StepEntity } from '@/types/StepEntity';
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import { useEffect, useRef } from 'react';
 
 const STEP_TITLE_CLASSNAME = 'r-onboarding-item__header-title';
@@ -107,7 +107,9 @@ describe('Make sure core functionality works with the default UI', () => {
     const { findByText } = render(<Simple />)
     const nextButton = await findByText('Next')
     fireEvent.click(nextButton)
-    expect(onStepChangeCallback).toHaveBeenCalledWith('beforeStep 2')
+    await waitFor(() => {
+      expect(onStepChangeCallback).toHaveBeenCalledWith('beforeStep 2')
+    })
   })
 
   it('should run on.beforeStep for the previous step when Previous button is clicked', async () => {
@@ -117,7 +119,9 @@ describe('Make sure core functionality works with the default UI', () => {
     onStepChangeCallback.mockClear()
     const previousButton = await findByText('Previous')
     fireEvent.click(previousButton)
-    expect(onStepChangeCallback).toHaveBeenCalledWith('beforeStep 1')
+    await waitFor(() => {
+      expect(onStepChangeCallback).toHaveBeenCalledWith('beforeStep 1')
+    })
   })
 
   it('should run on.afterStep for the previous step when Next button is clicked', async () => {
