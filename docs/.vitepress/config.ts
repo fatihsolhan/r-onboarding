@@ -53,7 +53,7 @@ export default defineConfig({
             { text: 'Options', link: '/api/options' },
             { text: 'Hooks', link: '/api/hooks' },
             { text: 'Events', link: '/api/events' },
-            { text: 'Render Props', link: '/api/render-props' },
+            { text: 'Slots', link: '/api/slots' },
             { text: 'CSS Variables', link: '/api/css-variables' }
           ]
         }
