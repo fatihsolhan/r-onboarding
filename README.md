@@ -4,11 +4,15 @@
 
 A fully-typed, customizable onboarding component for React
 
+> Looking for Vue? Check out [v-onboarding](https://github.com/fatihsolhan/v-onboarding)
+
 [![Version](https://img.shields.io/npm/v/r-onboarding.svg?style=flat-square)](https://www.npmjs.com/package/r-onboarding)
 [![License](https://img.shields.io/npm/l/r-onboarding.svg?style=flat-square)](https://www.npmjs.com/package/r-onboarding)
 [![Downloads](https://img.shields.io/npm/dm/r-onboarding.svg?style=flat-square)](https://www.npmjs.com/package/r-onboarding)
 
 [Demo](https://r-onboarding.fatihsolhan.com/) · [Documentation](https://r-onboarding-docs.fatihsolhan.com/)
+
+<img src="demo/src/assets/screenshot.png" alt="r-onboarding screenshot" width="600" />
 
 </div>
 
