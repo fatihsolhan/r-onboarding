@@ -1,3 +1,5 @@
+'use client';
+
 import './css/r-onboarding.sass';
 
 export * from '@/components';

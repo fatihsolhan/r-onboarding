@@ -32,7 +32,8 @@ export default defineConfig({
           text: 'Introduction',
           items: [
             { text: 'What is r-onboarding?', link: '/guide/introduction' },
-            { text: 'Getting Started', link: '/guide/getting-started' }
+            { text: 'Getting Started', link: '/guide/getting-started' },
+            { text: 'Next.js', link: '/guide/nextjs' }
           ]
         },
         {

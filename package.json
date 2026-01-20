@@ -28,12 +28,18 @@
     "src/types/*"
   ],
   "types": "./src/types/index.d.ts",
-  "main": "./dist/r-onboarding.umd.js",
-  "module": "./dist/r-onboarding.es.js",
+  "main": "./dist/r-onboarding.cjs",
+  "module": "./dist/r-onboarding.js",
   "exports": {
     ".": {
-      "import": "./dist/r-onboarding.es.js",
-      "require": "./dist/r-onboarding.umd.js"
+      "import": "./dist/r-onboarding.js",
+      "require": "./dist/r-onboarding.cjs",
+      "types": "./src/types/index.d.ts"
+    },
+    "./nextjs": {
+      "import": "./dist/nextjs.js",
+      "require": "./dist/nextjs.cjs",
+      "types": "./src/types/index.d.ts"
     },
     "./dist/style.css": "./dist/style.css"
   },
@@ -78,8 +84,8 @@
     "vitest": "^0.22.1"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0"
+    "react": ">=18",
+    "react-dom": ">=18"
   },
   "bugs": {
     "url": "https://github.com/fatihsolhan/r-onboarding/issues"

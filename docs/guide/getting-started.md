@@ -27,6 +27,10 @@ import { ROnboardingWrapper, useROnboarding } from 'r-onboarding'
 import 'r-onboarding/dist/style.css'
 ```
 
+::: tip Next.js
+For Next.js App Router, import from `r-onboarding/nextjs` instead. See the [Next.js guide](/guide/nextjs) for details.
+:::
+
 ### 2. Define your steps
 
 ```tsx
