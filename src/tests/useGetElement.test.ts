@@ -1,3 +1,4 @@
+import { createRef } from 'react';
 import useGetElement from '@/hooks/useGetElement';
 
 describe('useGetElement', () => {
@@ -65,5 +66,52 @@ describe('useGetElement', () => {
 
     const result = useGetElement('.multi-class');
     expect(result).toBe(div1);
+  });
+
+  it('should return element when ref contains an element', () => {
+    const div = document.createElement('div');
+    div.id = 'ref-element';
+    document.body.appendChild(div);
+
+    const ref = createRef<Element>();
+    (ref as { current: Element }).current = div;
+
+    const result = useGetElement(ref);
+    expect(result).toBe(div);
+  });
+
+  it('should return null when ref.current is null', () => {
+    const ref = createRef<Element>();
+
+    const result = useGetElement(ref);
+    expect(result).toBeNull();
+  });
+
+  it('should return element when ref is updated', () => {
+    const div1 = document.createElement('div');
+    div1.id = 'ref-element-1';
+    document.body.appendChild(div1);
+
+    const div2 = document.createElement('div');
+    div2.id = 'ref-element-2';
+    document.body.appendChild(div2);
+
+    const ref = { current: div1 };
+
+    expect(useGetElement(ref)).toBe(div1);
+
+    ref.current = div2;
+
+    expect(useGetElement(ref)).toBe(div2);
+  });
+
+  it('should return null when ref contains non-Element value (imperative handle)', () => {
+    // Simulates a ref created with useImperativeHandle that exposes methods instead of DOM element
+    const imperativeHandle = { focus: () => {}, getValue: () => 'test' };
+    const ref = { current: imperativeHandle };
+
+    // @ts-expect-error - testing runtime behavior with invalid type
+    const result = useGetElement(ref);
+    expect(result).toBeNull();
   });
 });

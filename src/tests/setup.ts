@@ -1,6 +1,6 @@
 import { vi } from 'vitest';
 
-// Mock ResizeObserver which is not implemented in jsdom
+// Mock ResizeObserver (not implemented in jsdom)
 global.ResizeObserver = vi.fn().mockImplementation(() => ({
   observe: vi.fn(),
   unobserve: vi.fn(),
@@ -8,15 +8,37 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
 }));
 
 // Mock requestAnimationFrame and cancelAnimationFrame
-// Use direct function assignment instead of vi.fn() to ensure it works in recursive calls
-global.requestAnimationFrame = (callback: FrameRequestCallback): number => {
-  return setTimeout(() => callback(performance.now()), 0) as unknown as number;
-};
-global.cancelAnimationFrame = (id: number): void => {
-  clearTimeout(id);
+const pendingFrames = new Map<number, ReturnType<typeof setTimeout>>();
+let nextFrameId = 0;
+
+global.requestAnimationFrame = function requestAnimationFrame(callback: FrameRequestCallback): number {
+  const frameId = ++nextFrameId;
+  const timeoutId = setTimeout(() => {
+    if (pendingFrames.has(frameId)) {
+      pendingFrames.delete(frameId);
+      callback(performance.now());
+    }
+  }, 0);
+  pendingFrames.set(frameId, timeoutId);
+  return frameId;
 };
 
-// Mock scrollIntoView which is not implemented in jsdom
+global.cancelAnimationFrame = function cancelAnimationFrame(frameId: number): void {
+  const timeoutId = pendingFrames.get(frameId);
+  if (timeoutId !== undefined) {
+    clearTimeout(timeoutId);
+    pendingFrames.delete(frameId);
+  }
+};
+
+afterEach(() => {
+  for (const [frameId, timeoutId] of pendingFrames) {
+    clearTimeout(timeoutId);
+    pendingFrames.delete(frameId);
+  }
+});
+
+// Mock scrollIntoView (not implemented in jsdom)
 Element.prototype.scrollIntoView = vi.fn();
 
 // Mock getBoundingClientRect if needed

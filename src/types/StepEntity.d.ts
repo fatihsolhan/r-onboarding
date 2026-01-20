@@ -1,6 +1,13 @@
-import { onBeforeStepOptions, onAfterStepOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
+import type { RefObject } from "react";
 
-export type AttachableElement = string | (() => Element | null)
+import type { onBeforeStepOptions, onAfterStepOptions, ROnboardingWrapperOptions } from "@/types/ROnboardingWrapper";
+
+export type AttachableElement =
+  | string
+  | (() => Element | null)
+  | RefObject<Element | null>
+  | null
+  | undefined;
 
 export interface StepEntity {
   content: {
